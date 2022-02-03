@@ -124,26 +124,26 @@ void paintTrafficLight(HDC* hdcP, int startX, int startY, int width, TrafficLigh
     DeleteObject(hBrushGrey);
 }
 
-int paintRoads(HDC* hdcP, int centreX, int centreY, int width, int windowRight, int windowBottom) {
-    int hWidth = width / 2;
+void paintRoads(HDC* hdcP, int centreX, int centreY, int roadWidth, int wRight, int wBottom) {
+    int hWidth = roadWidth / 2;
 
     // Draw roads
     HBRUSH hBrushRoad = CreateSolidBrush(RGB(100, 100, 100));
     HGDIOBJ hOrg = SelectObject(*hdcP, hBrushRoad);
-    Rectangle(*hdcP, centreX - hWidth, 0, centreX + hWidth, windowBottom);
-    Rectangle(*hdcP, 0, centreY - hWidth, windowRight, centreY + hWidth);
+    Rectangle(*hdcP, centreX - hWidth, 0, centreX + hWidth, wBottom);
+    Rectangle(*hdcP, 0, centreY - hWidth, wRight, centreY + hWidth);
     SelectObject(*hdcP, hOrg);
     DeleteObject(hBrushRoad);
 
     // Draw road lines
     HBRUSH hBrushLines = CreateSolidBrush(RGB(255, 255, 255));
     hOrg = SelectObject(*hdcP, hBrushLines);
-    int lineWidth = hWidth / 10;
+    int lineWidth = roadWidth / 20;
     int lineLength = hWidth;
-    for (int y = 0; y <= windowBottom - lineLength; y += lineLength * 1.5) {
+    for (int y = 0; y <= wBottom - lineLength; y += lineLength * 1.5) {
         Rectangle(*hdcP, centreX - lineWidth, y, centreX + lineWidth, y + lineLength);
     }
-    for (int x = 0; x <= windowRight - lineLength; x += lineLength * 1.5) {
+    for (int x = 0; x <= wRight - lineLength; x += lineLength * 1.5) {
         Rectangle(*hdcP, x, centreY - lineWidth, x + lineLength, centreY + lineWidth);
     }
     SelectObject(*hdcP, hBrushLines);
@@ -152,7 +152,32 @@ int paintRoads(HDC* hdcP, int centreX, int centreY, int width, int windowRight, 
     HBRUSH hBrushIntersect = CreateSolidBrush(RGB(120, 120, 120));
     hOrg = SelectObject(*hdcP, hBrushIntersect);
     Rectangle(*hdcP, centreX - hWidth, centreY - hWidth, centreX + hWidth, centreY + hWidth);
+}
 
-    // Return the lane width
-    return hWidth - lineWidth / 2;
+void paintCars(HDC* hdcP, std::vector<CAR*>* carsVert, std::vector<CAR*>* carsHor, int centreX, int centreY, int wRight, int wBottom, int roadWidth) {
+    int lineWidth = roadWidth / 20;
+    int offset = lineWidth / 2;
+    int laneWidth = roadWidth / 2 - offset;
+    int hWidth = laneWidth / 2;
+    HGDIOBJ hOrg;
+
+    // Drawing vertical driving cars
+    for (auto car : *carsVert) {
+        HBRUSH hBrush = CreateSolidBrush(RGB(255, 0, 0));
+        hOrg = SelectObject(*hdcP, hBrush);
+        int x = 0;// car->x;
+        RoundRect(*hdcP, x, centreY - hWidth, x + laneWidth, centreY + hWidth, laneWidth / 3, laneWidth / 3);
+        SelectObject(*hdcP, hOrg);
+        DeleteObject(hBrush);
+    }
+
+    // Drawing horisontal driving cars
+    for (auto car : *carsHor) {
+        HBRUSH hBrush = CreateSolidBrush(RGB(255, 0, 0));
+        hOrg = SelectObject(*hdcP, hBrush);
+        int y = 0;//car->y;
+        RoundRect(*hdcP, centreX - hWidth, y, centreX + hWidth, y + laneWidth, laneWidth / 3, laneWidth / 3);
+        SelectObject(*hdcP, hOrg);
+        DeleteObject(hBrush);
+    }
 }

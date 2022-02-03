@@ -4,6 +4,7 @@
 #include "framework.h"
 #include "Assignment 1.h"
 #include "TrafficPainter.h"
+#include <vector>
 
 #define MAX_LOADSTRING 100
 
@@ -14,6 +15,9 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
 int light1State = 0;
 int light2State = 0;
+std::vector<CAR*> carsVert;
+std::vector<CAR*> carsHor;
+int MAX_CARS = 100;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -148,11 +152,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+    case WM_KEYDOWN:
+        {
+            if (wParam == VK_SPACE) {
+                CAR car = {RGB(255, 0, 255), 0, 0};
+                int numCars = carsVert.size() + carsHor.size();
+                if (numCars < MAX_CARS) {
+                    numCars % 2 == 0 ? carsVert.push_back(&car) : carsHor.push_back(&car);
+                }
+            }
+        }
+        break;
+
     case WM_CREATE:
         {
-            SetTimer(hWnd, 1, 1000, NULL);
-            SetTimer(hWnd, 2, 2000, NULL);
-            SetTimer(hWnd, 3, 10, NULL);
+            SetTimer(hWnd, 1, 1500, NULL);
+            SetTimer(hWnd, 2, 2500, NULL);
+            SetTimer(hWnd, 3, 100, NULL);
         }
         break;
 
@@ -167,13 +183,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                 case 2:
                     {
-                        light2State = (light1State + 1) % 4;
+                        light2State = (light2State + 1) % 4;
                     }
                     break;
 
                 case 3:
                     {
-
+                        
                     }
                     break;
 
@@ -181,6 +197,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
 
             InvalidateRect(hWnd, NULL, true);
+
         }
         break;
 
@@ -192,31 +209,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Drawing done here
             RECT rect;
             if (GetWindowRect(hWnd, &rect)) {
+                // Initial setup of values
                 int windowWidth = rect.right - rect.left;
                 int windowHeight = rect.bottom - rect.top;
                 int centreX = windowWidth / 2;
                 int centreY = windowHeight / 2;
                 int roadWidth = windowWidth / 12;
-                int laneWidth = paintRoads(&hdc, centreX, centreY, roadWidth, rect.right, rect.bottom);
 
-                TrafficLightType type1 = TrafficLightType::Red;
-                switch (light1State) {
-                    case 0: type1 = TrafficLightType::Red; break;
-                    case 1: type1 = TrafficLightType::RedYellow; break;
-                    case 2: type1 = TrafficLightType::Green; break;
-                    case 3: type1 = TrafficLightType::Yellow; break;
-                    default: break;
-                }
+                // Drawing roads
+                paintRoads(&hdc, centreX, centreY, roadWidth, rect.right, rect.bottom);
 
-                TrafficLightType type2 = TrafficLightType::Red;
-                switch (light2State) {
-                case 0: type1 = TrafficLightType::Red; break;
-                case 1: type1 = TrafficLightType::RedYellow; break;
-                case 2: type1 = TrafficLightType::Green; break;
-                case 3: type1 = TrafficLightType::Yellow; break;
-                default: break;
-                }
+                // Drawing cars
+                paintCars(&hdc, &carsVert, &carsHor, centreX, centreY, rect.right, rect.bottom, roadWidth);
 
+                // Drawing traffic lights
+                TrafficLightType type1 = light1State == 0 ? TrafficLightType::Red : light1State == 1 ? TrafficLightType::RedYellow : light1State == 2 ? TrafficLightType::Green : TrafficLightType::Yellow;
+                TrafficLightType type2 = light2State == 0 ? TrafficLightType::Red : light2State == 1 ? TrafficLightType::RedYellow : light2State == 2 ? TrafficLightType::Green : TrafficLightType::Yellow;
                 paintTrafficLight(&hdc, centreX + roadWidth * 0.75, centreY - roadWidth * 3, roadWidth / 2, type1);
                 paintTrafficLight(&hdc, centreX + - roadWidth * 3, centreY - roadWidth * 2.2, roadWidth / 2, type2);
             }
