@@ -27,7 +27,7 @@
     <ClInclude Include="Assignment 1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TrafficLightPainter.h">
+    <ClInclude Include="TrafficPainter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClCompile Include="Assignment 1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TrafficLightPainter.cpp">
+    <ClCompile Include="TrafficPainter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

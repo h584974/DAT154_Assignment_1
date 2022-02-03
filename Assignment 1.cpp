@@ -3,7 +3,7 @@
 
 #include "framework.h"
 #include "Assignment 1.h"
-#include "TrafficLightPainter.h"
+#include "TrafficPainter.h"
 
 #define MAX_LOADSTRING 100
 
@@ -11,6 +11,9 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+
+int light1State = 0;
+int light2State = 0;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -27,6 +30,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
+
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -143,26 +147,92 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+    case WM_CREATE:
+        {
+            SetTimer(hWnd, 1, 1000, NULL);
+            SetTimer(hWnd, 2, 2000, NULL);
+            SetTimer(hWnd, 3, 10, NULL);
+        }
+        break;
+
+    case WM_TIMER:
+        {
+            switch (wParam) {
+                case 1:
+                    {
+                        light1State = (light1State + 1) % 4;
+                    }
+                    break;
+
+                case 2:
+                    {
+                        light2State = (light1State + 1) % 4;
+                    }
+                    break;
+
+                case 3:
+                    {
+
+                    }
+                    break;
+
+                default: break;
+            }
+
+            InvalidateRect(hWnd, NULL, true);
+        }
+        break;
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
 
             // Drawing done here
-            paintTrafficLight(&hdc, 100, 100, 100, Red);
-            paintTrafficLight(&hdc, 300, 100, 100, Green);
-            paintTrafficLight(&hdc, 500, 100, 100, RedYellow);
-            paintTrafficLight(&hdc, 700, 100, 100, Yellow);
+            RECT rect;
+            if (GetWindowRect(hWnd, &rect)) {
+                int windowWidth = rect.right - rect.left;
+                int windowHeight = rect.bottom - rect.top;
+                int centreX = windowWidth / 2;
+                int centreY = windowHeight / 2;
+                int roadWidth = windowWidth / 12;
+                int laneWidth = paintRoads(&hdc, centreX, centreY, roadWidth, rect.right, rect.bottom);
+
+                TrafficLightType type1 = TrafficLightType::Red;
+                switch (light1State) {
+                    case 0: type1 = TrafficLightType::Red; break;
+                    case 1: type1 = TrafficLightType::RedYellow; break;
+                    case 2: type1 = TrafficLightType::Green; break;
+                    case 3: type1 = TrafficLightType::Yellow; break;
+                    default: break;
+                }
+
+                TrafficLightType type2 = TrafficLightType::Red;
+                switch (light2State) {
+                case 0: type1 = TrafficLightType::Red; break;
+                case 1: type1 = TrafficLightType::RedYellow; break;
+                case 2: type1 = TrafficLightType::Green; break;
+                case 3: type1 = TrafficLightType::Yellow; break;
+                default: break;
+                }
+
+                paintTrafficLight(&hdc, centreX + roadWidth * 0.75, centreY - roadWidth * 3, roadWidth / 2, type1);
+                paintTrafficLight(&hdc, centreX + - roadWidth * 3, centreY - roadWidth * 2.2, roadWidth / 2, type2);
+            }
             
             EndPaint(hWnd, &ps);
         }
         break;
+
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
+
     return 0;
 }
 
