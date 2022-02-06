@@ -138,13 +138,13 @@ void paintRoads(HDC* hdcP, int centreX, int centreY, int roadWidth, int wRight, 
     // Draw road lines
     HBRUSH hBrushLines = CreateSolidBrush(RGB(255, 255, 255));
     hOrg = SelectObject(*hdcP, hBrushLines);
-    int lineWidth = roadWidth / 20;
+    int hLineWidth = roadWidth / 20;
     int lineLength = hWidth;
     for (int y = 0; y <= wBottom - lineLength; y += lineLength * 1.5) {
-        Rectangle(*hdcP, centreX - lineWidth, y, centreX + lineWidth, y + lineLength);
+        Rectangle(*hdcP, centreX - hLineWidth, y, centreX + hLineWidth, y + lineLength);
     }
     for (int x = 0; x <= wRight - lineLength; x += lineLength * 1.5) {
-        Rectangle(*hdcP, x, centreY - lineWidth, x + lineLength, centreY + lineWidth);
+        Rectangle(*hdcP, x, centreY - hLineWidth, x + lineLength, centreY + hLineWidth);
     }
     SelectObject(*hdcP, hBrushLines);
 
@@ -155,10 +155,12 @@ void paintRoads(HDC* hdcP, int centreX, int centreY, int roadWidth, int wRight, 
 }
 
 void paintCars(HDC* hdcP, std::vector<CAR*>* carsVert, std::vector<CAR*>* carsHor, int centreX, int centreY, int wRight, int wBottom, int roadWidth) {
-    int lineWidth = roadWidth / 20;
-    int offset = lineWidth / 2;
-    int laneWidth = roadWidth / 2 - offset;
-    int hWidth = laneWidth / 2;
+    int hLineWidth = roadWidth / 20;
+    int laneWidth = roadWidth / 2 - 2*hLineWidth;
+    int carWidth = laneWidth * 0.9;
+    int margin = (laneWidth - carWidth) / 2;
+    int baseX = centreX + hLineWidth + margin;
+    int baseY = centreY + hLineWidth + margin;
     HGDIOBJ hOrg;
 
     // Drawing vertical driving cars
@@ -166,7 +168,7 @@ void paintCars(HDC* hdcP, std::vector<CAR*>* carsVert, std::vector<CAR*>* carsHo
         HBRUSH hBrush = CreateSolidBrush(RGB(255, 0, 0));
         hOrg = SelectObject(*hdcP, hBrush);
         int x = 0;// car->x;
-        RoundRect(*hdcP, x, centreY - hWidth, x + laneWidth, centreY + hWidth, laneWidth / 3, laneWidth / 3);
+        RoundRect(*hdcP, x, baseY, x + laneWidth, baseY + laneWidth, laneWidth / 3, laneWidth / 3);
         SelectObject(*hdcP, hOrg);
         DeleteObject(hBrush);
     }
@@ -176,7 +178,7 @@ void paintCars(HDC* hdcP, std::vector<CAR*>* carsVert, std::vector<CAR*>* carsHo
         HBRUSH hBrush = CreateSolidBrush(RGB(255, 0, 0));
         hOrg = SelectObject(*hdcP, hBrush);
         int y = 0;//car->y;
-        RoundRect(*hdcP, centreX - hWidth, y, centreX + hWidth, y + laneWidth, laneWidth / 3, laneWidth / 3);
+        RoundRect(*hdcP, baseX, y, baseX + laneWidth, y + laneWidth, laneWidth / 3, laneWidth / 3);
         SelectObject(*hdcP, hOrg);
         DeleteObject(hBrush);
     }
