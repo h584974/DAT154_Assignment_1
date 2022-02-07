@@ -5,6 +5,8 @@
 #include "Assignment 1.h"
 #include "TrafficPainter.h"
 #include <vector>
+#include <time.h>
+#include "Car.h"
 
 #define MAX_LOADSTRING 100
 
@@ -13,11 +15,12 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
-int light1State = 0;
-int light2State = 0;
-std::vector<CAR*> carsVert;
-std::vector<CAR*> carsHor;
-int MAX_CARS = 100;
+int lightState = 0;
+std::vector<Car*> carsVert;
+std::vector<Car*> carsHor;
+const int MAX_CARS = 100;
+float pw = 0.5;
+float pn = 0.5;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -154,21 +157,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_KEYDOWN:
         {
-            if (wParam == VK_SPACE) {
-                int numCars = carsVert.size() + carsHor.size();
-                if (numCars < MAX_CARS) {
-                    CAR car = { 0, 0, RGB(255, 0, 255) };
-                    numCars % 2 == 0 ? carsVert.push_back(&car) : carsHor.push_back(&car);
+            switch (wParam) {
+                case VK_UP:
+                {
+                    if (pn <= 0.9) pn += 0.1;
                 }
+                break;
+
+                case VK_DOWN:
+                {
+                    if (pn >= 0.1) pn -= 0.1;
+                }
+                break;
+
+                case VK_LEFT:
+                {
+                    if (pw >= 0.1) pw -= 0.1;
+                }
+                break;
+
+                case VK_RIGHT:
+                {
+                    if (pw <= 0.9) pw += 0.1;
+                }
+                break;
+
+                default: break;
             }
         }
         break;
 
     case WM_CREATE:
         {
+            srand(time(NULL));
             SetTimer(hWnd, 1, 1500, NULL);
-            SetTimer(hWnd, 2, 2500, NULL);
-            SetTimer(hWnd, 3, 100, NULL);
+            SetTimer(hWnd, 2, 10, NULL);
+            SetTimer(hWnd, 3, 1000, NULL);
+            // DialogBox(hInst, MAKEINTRESOURCE(CONTROL), hWnd, DlgProc);
         }
         break;
 
@@ -177,19 +202,84 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wParam) {
                 case 1:
                     {
-                        light1State = (light1State + 1) % 4;
+                        lightState = (lightState + 1) % 4;
                     }
                     break;
 
                 case 2:
                     {
-                        light2State = (light2State + 1) % 4;
+                        RECT rect;
+                        if (GetWindowRect(hWnd, &rect)) {
+
+                            int windowWidth = rect.right - rect.left;
+                            int windowHeight = rect.bottom - rect.top;
+                            int roadWidth = windowWidth / 12;
+                            int centreX = windowWidth / 2;
+                            int centreY = windowHeight / 2;
+
+                            int i = 0;
+                            for (auto car : carsVert) {
+                                if (car->y > rect.bottom) carsVert.erase(carsVert.begin() + i);
+                                else if (lightState < 2 || car->y > centreY - roadWidth / 2) car->y += 2;
+                                i++;
+                            }
+
+                            i = 0;
+                            for (auto car : carsHor) {
+                                if (car->x > rect.right) carsHor.erase(carsHor.begin() + i);
+                                else if (lightState > 1 || car->x > centreX - roadWidth / 2) car->x += 2;
+                                i++;
+                            }
+
+                        }
                     }
                     break;
 
                 case 3:
-                    {
-                        
+                    {   
+                        RECT rect;
+                        if (GetWindowRect(hWnd, &rect)) {
+
+                            int windowWidth = rect.right - rect.left;
+                            int windowHeight = rect.bottom - rect.top;
+                            int roadWidth = windowWidth / 12;
+
+                            int numCars = carsVert.size() + carsHor.size();
+                            if (numCars < MAX_CARS) {
+                                int r = (rand() % 2) * 255;
+                                int g = (rand() % 2) * 255;
+                                int b = (rand() % 2) * 255;
+                                Car* car = new Car(-roadWidth / 2, -roadWidth / 2, r, g, b);
+                                bool vert = numCars % 2;
+
+                                bool valid = true;
+                                if (vert) {
+                                    int odds = (int)(1.0 / pn);
+                                    if (rand() % odds) break;
+
+                                    for (auto car : carsVert) {
+                                        if (car->y < roadWidth / 2) {
+                                            valid = false;
+                                            break;
+                                        }
+                                    }
+                                    if (valid) carsVert.push_back(car);
+                                }
+                                else {
+                                    int odds = (int)(1.0 / pw);
+                                    if (rand() % odds) break;
+
+                                    for (auto car : carsHor) {
+                                        if (car->x < roadWidth / 2) {
+                                            valid = false;
+                                            break;
+                                        }
+                                    }
+                                    if (valid) carsHor.push_back(car);
+                                }
+                            }
+
+                        }
                     }
                     break;
 
@@ -220,13 +310,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 paintRoads(&hdc, centreX, centreY, roadWidth, rect.right, rect.bottom);
 
                 // Drawing cars
-                paintCars(&hdc, &carsVert, &carsHor, centreX, centreY, rect.right, rect.bottom, roadWidth);
+                paintCars(&hdc, carsVert, carsHor, centreX, centreY, rect.right, rect.bottom, roadWidth);
 
                 // Drawing traffic lights
-                TrafficLightType type1 = light1State == 0 ? TrafficLightType::Red : light1State == 1 ? TrafficLightType::RedYellow : light1State == 2 ? TrafficLightType::Green : TrafficLightType::Yellow;
-                TrafficLightType type2 = light2State == 0 ? TrafficLightType::Red : light2State == 1 ? TrafficLightType::RedYellow : light2State == 2 ? TrafficLightType::Green : TrafficLightType::Yellow;
-                paintTrafficLight(&hdc, centreX + roadWidth * 0.75, centreY - roadWidth * 3, roadWidth / 2, type1);
-                paintTrafficLight(&hdc, centreX + - roadWidth * 3, centreY - roadWidth * 2.2, roadWidth / 2, type2);
+                TrafficLightType typeHor = lightState == 0 ? TrafficLightType::Red : lightState == 1 ? TrafficLightType::RedYellow : lightState == 2 ? TrafficLightType::Green : TrafficLightType::Yellow;
+                TrafficLightType typeVert = lightState == 0 ? TrafficLightType::Green : lightState == 1 ? TrafficLightType::Yellow : lightState == 2 ? TrafficLightType::Red : TrafficLightType::RedYellow;
+                paintTrafficLight(&hdc, centreX + roadWidth * 0.75, centreY - roadWidth * 3, roadWidth / 2, typeVert);
+                paintTrafficLight(&hdc, centreX + - roadWidth * 3, centreY - roadWidth * 2.2, roadWidth / 2, typeHor);
             }
             
             EndPaint(hWnd, &ps);

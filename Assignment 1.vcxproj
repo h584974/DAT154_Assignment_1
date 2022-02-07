@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Assignment 1.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assignment 1.cpp" />
+    <ClCompile Include="Car.cpp" />
     <ClCompile Include="TrafficPainter.cpp" />
   </ItemGroup>
   <ItemGroup>

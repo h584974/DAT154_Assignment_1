@@ -30,12 +30,18 @@
     <ClInclude Include="TrafficPainter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assignment 1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TrafficPainter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
