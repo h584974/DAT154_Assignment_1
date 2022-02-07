@@ -155,9 +155,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
         {
             if (wParam == VK_SPACE) {
-                CAR car = {RGB(255, 0, 255), 0, 0};
                 int numCars = carsVert.size() + carsHor.size();
                 if (numCars < MAX_CARS) {
+                    CAR car = { 0, 0, RGB(255, 0, 255) };
                     numCars % 2 == 0 ? carsVert.push_back(&car) : carsHor.push_back(&car);
                 }
             }

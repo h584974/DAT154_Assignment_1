@@ -167,7 +167,7 @@ void paintCars(HDC* hdcP, std::vector<CAR*>* carsVert, std::vector<CAR*>* carsHo
     for (auto car : *carsVert) {
         HBRUSH hBrush = CreateSolidBrush(RGB(255, 0, 0));
         hOrg = SelectObject(*hdcP, hBrush);
-        int x = 0;// car->x;
+        int x = car->x;
         RoundRect(*hdcP, x, baseY, x + laneWidth, baseY + laneWidth, laneWidth / 3, laneWidth / 3);
         SelectObject(*hdcP, hOrg);
         DeleteObject(hBrush);
@@ -177,7 +177,7 @@ void paintCars(HDC* hdcP, std::vector<CAR*>* carsVert, std::vector<CAR*>* carsHo
     for (auto car : *carsHor) {
         HBRUSH hBrush = CreateSolidBrush(RGB(255, 0, 0));
         hOrg = SelectObject(*hdcP, hBrush);
-        int y = 0;//car->y;
+        int y = car->y;
         RoundRect(*hdcP, baseX, y, baseX + laneWidth, y + laneWidth, laneWidth / 3, laneWidth / 3);
         SelectObject(*hdcP, hOrg);
         DeleteObject(hBrush);
