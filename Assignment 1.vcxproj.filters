@@ -27,7 +27,7 @@
     <ClInclude Include="Assignment 1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TrafficPainter.h">
+    <ClInclude Include="Painter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Car.h">
@@ -38,7 +38,7 @@
     <ClCompile Include="Assignment 1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TrafficPainter.cpp">
+    <ClCompile Include="Painter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Car.cpp">

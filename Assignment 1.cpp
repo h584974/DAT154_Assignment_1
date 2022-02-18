@@ -3,7 +3,7 @@
 
 #include "framework.h"
 #include "Assignment 1.h"
-#include "TrafficPainter.h"
+#include "Painter.h"
 #include <vector>
 #include <time.h>
 #include "Car.h"
@@ -312,11 +312,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 SelectObject(vdc, bmp);
 
                 // Draw white background on vdc
-                HBRUSH hBrushWhite = CreateSolidBrush(RGB(255, 255, 255));
-                SelectObject(vdc, hBrushWhite);
-                Rectangle(vdc, 0, 0, rect.right, rect.bottom);
-                SelectObject(vdc, bmp);
-                DeleteObject(hBrushWhite);
+                paintWhiteBackground(&vdc, windowWidth, windowHeight);
 
                 // Drawing roads
                 paintRoads(&vdc, centreX, centreY, roadWidth, rect.right, rect.bottom);

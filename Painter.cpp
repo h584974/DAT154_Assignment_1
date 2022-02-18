@@ -1,6 +1,14 @@
 #include "framework.h"
-#include "TrafficPainter.h"
+#include "Painter.h"
 #include "Car.h"
+
+void paintWhiteBackground(HDC* dcP, int windowWidth, int windowHeight) {
+    HBRUSH hBrushWhite = CreateSolidBrush(RGB(255, 255, 255));
+    HGDIOBJ hOrg = SelectObject(*dcP, hBrushWhite);
+    Rectangle(*dcP, 0, 0, windowWidth, windowHeight);
+    SelectObject(*dcP, hOrg);
+    DeleteObject(hBrushWhite);
+}
 
 void paintTrafficLight(HDC* dcP, int startX, int startY, int width, TrafficLightType type) {
     // Create brushes

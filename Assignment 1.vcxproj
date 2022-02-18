@@ -144,12 +144,12 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TrafficPainter.h" />
+    <ClInclude Include="Painter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assignment 1.cpp" />
     <ClCompile Include="Car.cpp" />
-    <ClCompile Include="TrafficPainter.cpp" />
+    <ClCompile Include="Painter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Assignment 1.rc" />
