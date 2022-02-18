@@ -306,17 +306,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 int centreY = windowHeight / 2;
                 int roadWidth = windowWidth / 12;
 
+                // Create virtual device context and associated bitmap
+                HDC vdc = CreateCompatibleDC(hdc);
+                HBITMAP bmp = CreateCompatibleBitmap(hdc, windowWidth, windowHeight);
+                SelectObject(vdc, bmp);
+
+                // Draw white background on vdc
+                HBRUSH hBrushWhite = CreateSolidBrush(RGB(255, 255, 255));
+                SelectObject(vdc, hBrushWhite);
+                Rectangle(vdc, 0, 0, rect.right, rect.bottom);
+                SelectObject(vdc, bmp);
+                DeleteObject(hBrushWhite);
+
                 // Drawing roads
-                paintRoads(&hdc, centreX, centreY, roadWidth, rect.right, rect.bottom);
+                paintRoads(&vdc, centreX, centreY, roadWidth, rect.right, rect.bottom);
 
                 // Drawing cars
-                paintCars(&hdc, carsVert, carsHor, centreX, centreY, rect.right, rect.bottom, roadWidth);
+                paintCars(&vdc, carsVert, carsHor, centreX, centreY, rect.right, rect.bottom, roadWidth);
 
                 // Drawing traffic lights
                 TrafficLightType typeHor = lightState == 0 ? TrafficLightType::Red : lightState == 1 ? TrafficLightType::RedYellow : lightState == 2 ? TrafficLightType::Green : TrafficLightType::Yellow;
                 TrafficLightType typeVert = lightState == 0 ? TrafficLightType::Green : lightState == 1 ? TrafficLightType::Yellow : lightState == 2 ? TrafficLightType::Red : TrafficLightType::RedYellow;
-                paintTrafficLight(&hdc, centreX + roadWidth * 0.75, centreY - roadWidth * 3, roadWidth / 2, typeVert);
-                paintTrafficLight(&hdc, centreX + - roadWidth * 3, centreY - roadWidth * 2.2, roadWidth / 2, typeHor);
+                paintTrafficLight(&vdc, centreX + roadWidth * 0.75, centreY - roadWidth * 3, roadWidth / 2, typeVert);
+                paintTrafficLight(&vdc, centreX + - roadWidth * 3, centreY - roadWidth * 2.2, roadWidth / 2, typeHor);
+
+                // Copy from vdc to hdc
+                BitBlt(hdc, 0, 0, windowWidth, windowHeight, vdc, 0, 0, SRCCOPY);
+
+                // Delete virtual device context and bitmap
+                DeleteDC(vdc);
+                DeleteObject(bmp);
             }
             
             EndPaint(hWnd, &ps);

@@ -2,7 +2,7 @@
 #include "TrafficPainter.h"
 #include "Car.h"
 
-void paintTrafficLight(HDC* hdcP, int startX, int startY, int width, TrafficLightType type) {
+void paintTrafficLight(HDC* dcP, int startX, int startY, int width, TrafficLightType type) {
     // Create brushes
     HBRUSH hBrushBlack = CreateSolidBrush(RGB(0, 0, 0));
     HBRUSH hBrushRed = CreateSolidBrush(RGB(255, 0, 0));
@@ -10,96 +10,96 @@ void paintTrafficLight(HDC* hdcP, int startX, int startY, int width, TrafficLigh
     HBRUSH hBrushGreen = CreateSolidBrush(RGB(0, 255, 0));
     HBRUSH hBrushYellow = CreateSolidBrush(RGB(255, 255, 0));
 
-    HGDIOBJ hOrg = SelectObject(*hdcP, hBrushBlack);
-    RoundRect(*hdcP, startX, startY, startX + width, startY + (3 * width), width / 5, width / 5);
+    HGDIOBJ hOrg = SelectObject(*dcP, hBrushBlack);
+    RoundRect(*dcP, startX, startY, startX + width, startY + (3 * width), width / 5, width / 5);
 
     switch (type) {
         case TrafficLightType::Red:
         {
-            hOrg = SelectObject(*hdcP, hBrushRed);
+            hOrg = SelectObject(*dcP, hBrushRed);
             int lightWidth = width * 0.9;
             int left = startX + width - lightWidth;
             int top = startY + width - lightWidth;
             int right = startX + lightWidth;
             int bottom = startY + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
-            hOrg = SelectObject(*hdcP, hBrushGrey);
+            hOrg = SelectObject(*dcP, hBrushGrey);
             top = startY + (2 * width) - lightWidth;
             bottom = startY + width + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
             
             top = startY + (3 * width) - lightWidth;
             bottom = startY + (2 * width) + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
             break;
         }
 
         case TrafficLightType::Green:
         {
-            hOrg = SelectObject(*hdcP, hBrushGrey);
+            hOrg = SelectObject(*dcP, hBrushGrey);
             int lightWidth = width * 0.9;
             int left = startX + width - lightWidth;
             int top = startY + width - lightWidth;
             int right = startX + lightWidth;
             int bottom = startY + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
             top = startY + (2 * width) - lightWidth;
             bottom = startY + width + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
-            hOrg = SelectObject(*hdcP, hBrushGreen);
+            hOrg = SelectObject(*dcP, hBrushGreen);
             top = startY + (3 * width) - lightWidth;
             bottom = startY + (2 * width) + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
             break;
         }
 
         case TrafficLightType::RedYellow:
         {
-            hOrg = SelectObject(*hdcP, hBrushRed);
+            hOrg = SelectObject(*dcP, hBrushRed);
             int lightWidth = width * 0.9;
             int left = startX + width - lightWidth;
             int top = startY + width - lightWidth;
             int right = startX + lightWidth;
             int bottom = startY + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
-            hOrg = SelectObject(*hdcP, hBrushYellow);
+            hOrg = SelectObject(*dcP, hBrushYellow);
             top = startY + (2 * width) - lightWidth;
             bottom = startY + width + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
-            hOrg = SelectObject(*hdcP, hBrushGrey);
+            hOrg = SelectObject(*dcP, hBrushGrey);
             top = startY + (3 * width) - lightWidth;
             bottom = startY + (2 * width) + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
             break;
         }
 
         case TrafficLightType::Yellow:
         {
-            hOrg = SelectObject(*hdcP, hBrushGrey);
+            hOrg = SelectObject(*dcP, hBrushGrey);
             int lightWidth = width * 0.9;
             int left = startX + width - lightWidth;
             int top = startY + width - lightWidth;
             int right = startX + lightWidth;
             int bottom = startY + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
-            hOrg = SelectObject(*hdcP, hBrushYellow);
+            hOrg = SelectObject(*dcP, hBrushYellow);
             top = startY + (2 * width) - lightWidth;
             bottom = startY + width + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
-            hOrg = SelectObject(*hdcP, hBrushGrey);
+            hOrg = SelectObject(*dcP, hBrushGrey);
             top = startY + (3 * width) - lightWidth;
             bottom = startY + (2 * width) + lightWidth;
-            Ellipse(*hdcP, left, top, right, bottom);
+            Ellipse(*dcP, left, top, right, bottom);
 
             break;
         }
@@ -108,7 +108,7 @@ void paintTrafficLight(HDC* hdcP, int startX, int startY, int width, TrafficLigh
     }
 
     // Delete brushes
-    SelectObject(*hdcP, hOrg);
+    SelectObject(*dcP, hOrg);
     DeleteObject(hBrushGrey);
     DeleteObject(hBrushBlack);
     DeleteObject(hBrushRed);
@@ -116,7 +116,7 @@ void paintTrafficLight(HDC* hdcP, int startX, int startY, int width, TrafficLigh
     DeleteObject(hBrushYellow);
 }
 
-void paintRoads(HDC* hdcP, int centreX, int centreY, int roadWidth, int wRight, int wBottom) {
+void paintRoads(HDC* dcP, int centreX, int centreY, int roadWidth, int wRight, int wBottom) {
     int hWidth = roadWidth / 2;
 
     // Create brushes
@@ -125,33 +125,33 @@ void paintRoads(HDC* hdcP, int centreX, int centreY, int roadWidth, int wRight, 
     HBRUSH hBrushIntersect = CreateSolidBrush(RGB(120, 120, 120));
 
     // Draw roads
-    HGDIOBJ hOrg = SelectObject(*hdcP, hBrushRoad);
-    Rectangle(*hdcP, centreX - hWidth, 0, centreX + hWidth, wBottom);
-    Rectangle(*hdcP, 0, centreY - hWidth, wRight, centreY + hWidth);
+    HGDIOBJ hOrg = SelectObject(*dcP, hBrushRoad);
+    Rectangle(*dcP, centreX - hWidth, 0, centreX + hWidth, wBottom);
+    Rectangle(*dcP, 0, centreY - hWidth, wRight, centreY + hWidth);
 
     // Draw road lines
-    hOrg = SelectObject(*hdcP, hBrushLines);
+    hOrg = SelectObject(*dcP, hBrushLines);
     int hLineWidth = roadWidth / 20;
     int lineLength = hWidth;
     for (int y = 0; y <= wBottom - lineLength; y += lineLength * 1.5) {
-        Rectangle(*hdcP, centreX - hLineWidth, y, centreX + hLineWidth, y + lineLength);
+        Rectangle(*dcP, centreX - hLineWidth, y, centreX + hLineWidth, y + lineLength);
     }
     for (int x = 0; x <= wRight - lineLength; x += lineLength * 1.5) {
-        Rectangle(*hdcP, x, centreY - hLineWidth, x + lineLength, centreY + hLineWidth);
+        Rectangle(*dcP, x, centreY - hLineWidth, x + lineLength, centreY + hLineWidth);
     }
 
     // Draw intersection
-    hOrg = SelectObject(*hdcP, hBrushIntersect);
-    Rectangle(*hdcP, centreX - hWidth, centreY - hWidth, centreX + hWidth, centreY + hWidth);
+    hOrg = SelectObject(*dcP, hBrushIntersect);
+    Rectangle(*dcP, centreX - hWidth, centreY - hWidth, centreX + hWidth, centreY + hWidth);
 
     // Delete brushes
-    SelectObject(*hdcP, hOrg);
+    SelectObject(*dcP, hOrg);
     DeleteObject(hBrushRoad);
     DeleteObject(hBrushLines);
     DeleteObject(hBrushIntersect);
 }
 
-void paintCars(HDC* hdcP, std::vector<Car*> carsVert, std::vector<Car*> carsHor, int centreX, int centreY, int wRight, int wBottom, int roadWidth) {
+void paintCars(HDC* dcP, std::vector<Car*> carsVert, std::vector<Car*> carsHor, int centreX, int centreY, int wRight, int wBottom, int roadWidth) {
     int hLineWidth = roadWidth / 20;
     int laneWidth = roadWidth / 2 - 2*hLineWidth;
     int carWidth = laneWidth * 0.9;
@@ -163,20 +163,20 @@ void paintCars(HDC* hdcP, std::vector<Car*> carsVert, std::vector<Car*> carsHor,
     // Drawing horisontal driving cars
     for (auto car : carsHor) {
         HBRUSH hBrush = CreateSolidBrush(RGB(car->r, car->g, car->b));
-        hOrg = SelectObject(*hdcP, hBrush);
+        hOrg = SelectObject(*dcP, hBrush);
         int x = car->x;
-        RoundRect(*hdcP, x, baseY, x + laneWidth, baseY + laneWidth, laneWidth / 3, laneWidth / 3);
-        SelectObject(*hdcP, hOrg);
+        RoundRect(*dcP, x, baseY, x + laneWidth, baseY + laneWidth, laneWidth / 3, laneWidth / 3);
+        SelectObject(*dcP, hOrg);
         DeleteObject(hBrush);
     }
 
     // Drawing vertical driving cars
     for (auto car : carsVert) {
         HBRUSH hBrush = CreateSolidBrush(RGB(car->r, car->g, car->b));
-        hOrg = SelectObject(*hdcP, hBrush);
+        hOrg = SelectObject(*dcP, hBrush);
         int y = car->y;
-        RoundRect(*hdcP, baseX, y, baseX + laneWidth, y + laneWidth, laneWidth / 3, laneWidth / 3);
-        SelectObject(*hdcP, hOrg);
+        RoundRect(*dcP, baseX, y, baseX + laneWidth, y + laneWidth, laneWidth / 3, laneWidth / 3);
+        SelectObject(*dcP, hOrg);
         DeleteObject(hBrush);
     }
 }
