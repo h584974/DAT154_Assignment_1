@@ -286,7 +286,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 default: break;
             }
 
-            InvalidateRect(hWnd, NULL, true);
+            InvalidateRect(hWnd, NULL, false);
 
         }
         break;
