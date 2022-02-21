@@ -57,5 +57,8 @@
     <Image Include="Assignment 1.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\block.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

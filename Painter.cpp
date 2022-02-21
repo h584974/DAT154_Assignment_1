@@ -2,6 +2,23 @@
 #include "Painter.h"
 #include "Car.h"
 
+void paintCityBlocks(HDC* dcP, HINSTANCE hInst, int windowWidth, int windowHeight, int roadWidth) {
+    HBITMAP pic = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, 0);
+
+    HDC dc = CreateCompatibleDC(*dcP);
+    HGDIOBJ hOrg = SelectObject(dc, pic);
+
+    BITMAP bmp;
+    GetObject(pic, sizeof(BITMAP), &bmp);
+    int w = bmp.bmWidth;
+    int h = bmp.bmHeight;
+    StretchBlt(*dcP, 0, 0, windowWidth / 2 - roadWidth / 2, windowHeight / 2 - roadWidth / 2, dc, 0, 0, w, h, SRCCOPY);
+
+    SelectObject(*dcP, hOrg);
+    DeleteDC(dc);
+    DeleteObject(pic);
+}
+
 void paintWhiteBackground(HDC* dcP, int windowWidth, int windowHeight) {
     HBRUSH hBrushWhite = CreateSolidBrush(RGB(255, 255, 255));
     HGDIOBJ hOrg = SelectObject(*dcP, hBrushWhite);

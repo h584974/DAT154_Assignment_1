@@ -155,6 +155,7 @@
     <ResourceCompile Include="Assignment 1.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\block.bmp" />
     <Image Include="Assignment 1.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

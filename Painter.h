@@ -5,6 +5,8 @@
 
 enum class TrafficLightType { Red, Green, RedYellow, Yellow };
 
+void paintCityBlocks(HDC* dcP, HINSTANCE hInst, int windowWidth, int windowHeight, int roadWidth);
+
 void paintWhiteBackground(HDC* dcP, int windowWidth, int windowHeight);
 
 void paintTrafficLight(HDC* dcP, int startX, int startY, int width, TrafficLightType type);

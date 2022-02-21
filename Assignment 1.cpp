@@ -258,7 +258,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                     if (rand() % odds) break;
 
                                     for (auto car : carsVert) {
-                                        if (car->y < roadWidth / 2) {
+                                        if (car->y < 0) {
                                             valid = false;
                                             break;
                                         }
@@ -270,7 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                     if (rand() % odds) break;
 
                                     for (auto car : carsHor) {
-                                        if (car->x < roadWidth / 2) {
+                                        if (car->x < 0) {
                                             valid = false;
                                             break;
                                         }
@@ -311,8 +311,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 HBITMAP bmp = CreateCompatibleBitmap(hdc, windowWidth, windowHeight);
                 SelectObject(vdc, bmp);
 
-                // Draw white background on vdc
+                // Draw background
                 paintWhiteBackground(&vdc, windowWidth, windowHeight);
+                paintCityBlocks(&vdc, hInst, windowWidth, windowHeight, roadWidth);
 
                 // Drawing roads
                 paintRoads(&vdc, centreX, centreY, roadWidth, rect.right, rect.bottom);
@@ -329,7 +330,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 // Copy from vdc to hdc
                 BitBlt(hdc, 0, 0, windowWidth, windowHeight, vdc, 0, 0, SRCCOPY);
 
-                // Delete virtual device context and bitmap
+                // Delete objects
                 DeleteDC(vdc);
                 DeleteObject(bmp);
             }
